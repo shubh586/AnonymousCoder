@@ -8,23 +8,26 @@ class AnonymousCoderApp(App):
     """A Textual app for coding through CLI"""
 
     BINDINGS = [
-        # ("s", "push_screen('settings')", "Settings"),
-        # ("m", "push_screen('memories')", "Memories"),
-        # ("h", "push_screen('history')", "History"),
         ("ctrl+c", "quit", "Quit"),
         ("ctrl+d", "toggle_dark", "Toggle Dark Mode"),
     ]
     
-    CSS_PATH="app.tcss"
-    # SCREENS = {
-    #     "settings": SettingsScreen,
-    #     "memories": MemoryManagementScreen,
-    #     "history": ChatHistoryScreen,
-    # }
+    CSS_PATH = "app.tcss"
+
+    def __init__(self, graph=None, config=None, database=None, **kwargs):
+        super().__init__(**kwargs)
+        self.graph = graph
+        self.agent_config = config
+        self.database = database
 
     def on_mount(self) -> None:
         """Called when app starts."""
-        self.install_screen(MainScreen(), name="main")
+        main_screen = MainScreen(
+            graph=self.graph,
+            config=self.agent_config,
+            database=self.database
+        )
+        self.install_screen(main_screen, name="main")
         self.push_screen("main")
 
     def action_toggle_dark(self) -> None:
@@ -35,4 +38,3 @@ class AnonymousCoderApp(App):
 if __name__ == "__main__":
     app = AnonymousCoderApp()
     app.run()
-    

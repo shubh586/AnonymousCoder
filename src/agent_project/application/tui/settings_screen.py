@@ -1,3 +1,9 @@
+from textual.app import ComposeResult
+from textual.containers import Container, HorizontalGroup, Vertical
+from textual.screen import Screen
+from textual.widgets import Button, Input, Label, Select, Static, Switch
+
+
 class SettingsScreen(Screen):
     """Settings configuration screen"""
     

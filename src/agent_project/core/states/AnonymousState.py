@@ -1,10 +1,12 @@
-from typing import List, Literal
+from typing import Annotated, List
+from typing_extensions import TypedDict
 
 from langchain_core.messages import BaseMessage
-from pydantic import BaseModel
+from langgraph.graph.message import add_messages
 
 
-class AnonymousState(BaseModel):
-    query:str
-    messages: List[BaseMessage]
-    type: Literal["execution_node","scaffolding_node"]
+class AnonymousState(TypedDict):
+    """State schema for the AnonymousCoder LangGraph agent."""
+    query: str
+    messages: Annotated[List[BaseMessage], add_messages]
+    type: str

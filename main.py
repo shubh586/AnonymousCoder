@@ -1,4 +1,11 @@
 import os
+import warnings
+
+warnings.filterwarnings("ignore", message="Core Pydantic V1")
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from src.agent_project.application.app import Application
 from src.agent_project.config.config import AppSettings

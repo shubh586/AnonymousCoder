@@ -1,3 +1,11 @@
+import uuid
+
+from textual.app import ComposeResult
+from textual.containers import Container, HorizontalGroup
+from textual.screen import Screen
+from textual.widgets import Button, Label, ListItem, ListView, Static, TextArea
+
+
 class ChatHistoryScreen(Screen):
     """Screen for managing chat history"""
     

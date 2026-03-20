@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml xmlns="http://graphml.graphstruct.org/xmlns"
+         xmlns:java="http://www.yworks.com/xml/yfiles-common/1.0/java"
+         xmlns:sys="http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0"
+         xmlns:x="http://www.yworks.com/xml/yfiles-common/markup/2.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:y="http://www.yworks.com/xml/graphml"
+         xmlns:yed="http://www.yworks.com/xml/yed/3"
+         xsi:schemaLocation="http://graphml.graphstruct.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
+
+  <key for="node" id="d0" yfiles.type="nodegraphics"/>
+  <key for="edge" id="d1" yfiles.type="edgegraphics"/>
+
+  <graph edgedefault="directed" id="G">
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  PRESENTATION LAYER                                -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <node id="grp_presentation">
+      <data key="d0">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="120" width="400" x="50" y="20"/>
+              <y:Fill color="#E8F5E9" transparent="false"/>
+              <y:BorderStyle color="#2E7D32" type="line" width="2.0"/>
+              <y:NodeLabel alignment="center" fontSize="16" fontStyle="bold" textColor="#1B5E20">🖥️ Presentation Layer</y:NodeLabel>
+              <y:State closed="false" closedHeight="50" closedWidth="100" innerGraphDisplayEnabled="false"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="grp_presentation:">
+        <node id="n_tui">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="160" x="70" y="60"/>
+              <y:Fill color="#C8E6C9" transparent="false"/>
+              <y:BorderStyle color="#388E3C" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold">Textual TUI App
+(main_screen, settings,
+history, memories)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_cli">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="270" y="60"/>
+              <y:Fill color="#C8E6C9" transparent="false"/>
+              <y:BorderStyle color="#388E3C" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold">CLI Chat Loop
+(app._chat)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+      </graph>
+    </node>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  APPLICATION LAYER                                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <node id="grp_application">
+      <data key="d0">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="100" width="400" x="50" y="170"/>
+              <y:Fill color="#E3F2FD" transparent="false"/>
+              <y:BorderStyle color="#1565C0" type="line" width="2.0"/>
+              <y:NodeLabel alignment="center" fontSize="16" fontStyle="bold" textColor="#0D47A1">⚙️ Application Layer</y:NodeLabel>
+              <y:State closed="false" closedHeight="50" closedWidth="100" innerGraphDisplayEnabled="false"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="grp_application:">
+        <node id="n_app">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="160" x="70" y="210"/>
+              <y:Fill color="#BBDEFB" transparent="false"/>
+              <y:BorderStyle color="#1976D2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold">Application
+(Pydantic BaseModel)
+bootstrap + invoke</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_config">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="270" y="210"/>
+              <y:Fill color="#BBDEFB" transparent="false"/>
+              <y:BorderStyle color="#1976D2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold">AppSettings
+(Pydantic Config)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+      </graph>
+    </node>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  CORE LAYER                                        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <node id="grp_core">
+      <data key="d0">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="250" width="700" x="50" y="300"/>
+              <y:Fill color="#FFF3E0" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="line" width="2.0"/>
+              <y:NodeLabel alignment="center" fontSize="16" fontStyle="bold" textColor="#BF360C">🧠 Core Layer (LangGraph Agent)</y:NodeLabel>
+              <y:State closed="false" closedHeight="50" closedWidth="100" innerGraphDisplayEnabled="false"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="grp_core:">
+        <!-- Graph Nodes -->
+        <node id="n_memory">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="70" y="340"/>
+              <y:Fill color="#4A9EFF" transparent="false"/>
+              <y:BorderStyle color="#1565C0" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold" textColor="#FFFFFF">memory_node
+(RAG + Vector)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_understand">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="250" y="340"/>
+              <y:Fill color="#FF9F43" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold" textColor="#FFFFFF">understanding_node
+(Query Classifier)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_execution">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="430" y="310"/>
+              <y:Fill color="#EE5A24" transparent="false"/>
+              <y:BorderStyle color="#C0392B" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold" textColor="#FFFFFF">execution_node
+(ReAct Agent)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_scaffold">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="430" y="375"/>
+              <y:Fill color="#6AB04C" transparent="false"/>
+              <y:BorderStyle color="#27AE60" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="12" fontStyle="bold" textColor="#FFFFFF">scaffolding_node
+(WIP)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <!-- State -->
+        <node id="n_state">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="40" width="130" x="70" y="420"/>
+              <y:Fill color="#FFE0B2" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="line" width="1.0"/>
+              <y:NodeLabel fontSize="11">AnonymousState
+(query, messages, type)</y:NodeLabel>
+              <y:Shape type="rectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <!-- Prompts -->
+        <node id="n_prompts">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="40" width="130" x="250" y="420"/>
+              <y:Fill color="#FFE0B2" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="line" width="1.0"/>
+              <y:NodeLabel fontSize="11">System Prompts
+(memory, exec, understand)</y:NodeLabel>
+              <y:Shape type="rectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <!-- Tools -->
+        <node id="n_tools">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="60" width="160" x="430" y="440"/>
+              <y:Fill color="#FFE0B2" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="line" width="1.0"/>
+              <y:NodeLabel fontSize="10">FILE_SYS_TOOLS
+create/delete, diff, edit,
+read, write, grep, tree,
+index, framework_ctx</y:NodeLabel>
+              <y:Shape type="rectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <!-- MCP -->
+        <node id="n_mcp">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="35" width="100" x="630" y="440"/>
+              <y:Fill color="#FFE0B2" transparent="false"/>
+              <y:BorderStyle color="#E65100" type="dashed" width="1.0"/>
+              <y:NodeLabel fontSize="10">MCP Protocol
+(WIP)</y:NodeLabel>
+              <y:Shape type="rectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+      </graph>
+    </node>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  INFRASTRUCTURE LAYER                              -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <node id="grp_infra">
+      <data key="d0">
+        <y:ProxyAutoBoundsNode>
+          <y:Realizers active="0">
+            <y:GroupNode>
+              <y:Geometry height="120" width="700" x="50" y="570"/>
+              <y:Fill color="#F3E5F5" transparent="false"/>
+              <y:BorderStyle color="#6A1B9A" type="line" width="2.0"/>
+              <y:NodeLabel alignment="center" fontSize="16" fontStyle="bold" textColor="#4A148C">🏗️ Infrastructure Layer</y:NodeLabel>
+              <y:State closed="false" closedHeight="50" closedWidth="100" innerGraphDisplayEnabled="false"/>
+            </y:GroupNode>
+          </y:Realizers>
+        </y:ProxyAutoBoundsNode>
+      </data>
+      <graph edgedefault="directed" id="grp_infra:">
+        <node id="n_llm">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="150" x="70" y="610"/>
+              <y:Fill color="#CE93D8" transparent="false"/>
+              <y:BorderStyle color="#7B1FA2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="11" fontStyle="bold">LLM Clients
+Groq | OpenAI
+Google | Ollama</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_sqldb">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="250" y="610"/>
+              <y:Fill color="#CE93D8" transparent="false"/>
+              <y:BorderStyle color="#7B1FA2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="11" fontStyle="bold">SQLite DB
+(threads + messages)</y:NodeLabel>
+              <y:Shape type="rectangle3d"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_vecdb">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="140" x="420" y="610"/>
+              <y:Fill color="#CE93D8" transparent="false"/>
+              <y:BorderStyle color="#7B1FA2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="11" fontStyle="bold">Qdrant Vector DB
+(Singleton, cosine)</y:NodeLabel>
+              <y:Shape type="rectangle3d"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+        <node id="n_trace">
+          <data key="d0">
+            <y:ShapeNode>
+              <y:Geometry height="50" width="130" x="590" y="610"/>
+              <y:Fill color="#CE93D8" transparent="false"/>
+              <y:BorderStyle color="#7B1FA2" type="line" width="1.5"/>
+              <y:NodeLabel fontSize="11" fontStyle="bold">Langfuse
+(Tracing)</y:NodeLabel>
+              <y:Shape type="roundrectangle"/>
+            </y:ShapeNode>
+          </data>
+        </node>
+      </graph>
+    </node>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  UTILITIES                                         -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <node id="n_logger">
+      <data key="d0">
+        <y:ShapeNode>
+          <y:Geometry height="40" width="130" x="50" y="720"/>
+          <y:Fill color="#ECEFF1" transparent="false"/>
+          <y:BorderStyle color="#546E7A" type="line" width="1.0"/>
+          <y:NodeLabel fontSize="11">🔧 Loguru Logger</y:NodeLabel>
+          <y:Shape type="roundrectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!--  EDGES                                             -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- Presentation → Application -->
+    <edge id="e1" source="n_tui" target="n_app">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#2E7D32" type="line" width="1.5"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+    <edge id="e2" source="n_cli" target="n_app">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#2E7D32" type="line" width="1.5"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- Application → Config -->
+    <edge id="e3" source="n_app" target="n_config">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#1565C0" type="line" width="1.0"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- Application → Core (Graph) -->
+    <edge id="e4" source="n_app" target="n_memory">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#E65100" type="line" width="2.0"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">invoke graph</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- Graph edges: memory → understanding → execution/scaffolding -->
+    <edge id="e5" source="n_memory" target="n_understand">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#FF9F43" type="line" width="2.0"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+    <edge id="e6" source="n_understand" target="n_execution">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#EE5A24" type="line" width="2.0"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">route: execution</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+    <edge id="e7" source="n_understand" target="n_scaffold">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#6AB04C" type="line" width="2.0"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">route: scaffolding</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- execution → tools -->
+    <edge id="e8" source="n_execution" target="n_tools">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#C0392B" type="dashed" width="1.5"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">ReAct agent</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- Memory → Qdrant -->
+    <edge id="e9" source="n_memory" target="n_vecdb">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="line" width="1.5"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">similarity_search / add_texts</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- App → SQLite -->
+    <edge id="e10" source="n_app" target="n_sqldb">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="line" width="1.5"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">chat history</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- App → Langfuse -->
+    <edge id="e11" source="n_app" target="n_trace">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="dashed" width="1.0"/><y:Arrows source="none" target="standard"/><y:EdgeLabel fontSize="10">tracing (optional)</y:EdgeLabel></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- Nodes → LLM -->
+    <edge id="e12" source="n_execution" target="n_llm">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="line" width="1.5"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+    <edge id="e13" source="n_understand" target="n_llm">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="line" width="1.5"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+    <edge id="e14" source="n_memory" target="n_llm">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#7B1FA2" type="line" width="1.5"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+
+    <!-- App → Logger -->
+    <edge id="e15" source="n_app" target="n_logger">
+      <data key="d1"><y:PolyLineEdge><y:LineStyle color="#546E7A" type="dashed" width="1.0"/><y:Arrows source="none" target="standard"/></y:PolyLineEdge></data>
+    </edge>
+
+  </graph>
+</graphml>

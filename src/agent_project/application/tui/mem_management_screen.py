@@ -1,3 +1,11 @@
+import uuid
+
+from textual.app import ComposeResult
+from textual.containers import Container, HorizontalGroup
+from textual.screen import ModalScreen, Screen
+from textual.widgets import Button, DataTable, Input, Label, Static, TextArea
+
+
 class MemoryManagementScreen(Screen):
     """Screen for managing memories/knowledge base"""
     
