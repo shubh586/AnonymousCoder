@@ -23,41 +23,46 @@ def get_memory_node(llm: BaseChatModel):
     def memory_node(state: AnonymousState):
         # Get the current user query
         query: str = state["query"]
-        MEMORY_SYSTEM_PROMPT: str = get_memory_prompt()
-        CONTEXT_INJECT_PROMPT: str = get_context_injection_prompt()
-
-        # Step 1: Memory update agent — checks if query has memory-worthy info
         try:
-            agent = create_react_agent(
-                model=llm,
-                tools=VECTOR_STORE_TOOLS,
-                prompt=MEMORY_SYSTEM_PROMPT
-            )
-            agent.invoke({"messages": [HumanMessage(content=query)]})
-        except Exception:
-            pass  # Memory update is best-effort, don't block the pipeline
+            MEMORY_SYSTEM_PROMPT: str = get_memory_prompt()
+            CONTEXT_INJECT_PROMPT: str = get_context_injection_prompt()
 
-        # Step 2: Context injection agent — retrieves relevant memories
-        enriched_query = query
-        try:
-            agent = create_react_agent(
-                model=llm,
-                tools=[similarity_search],
-                prompt=CONTEXT_INJECT_PROMPT
-            )
-            output = agent.invoke({"messages": [HumanMessage(content=query)]})
-            # Append retrieved context to the query
-            ai_messages = [m for m in output.get("messages", []) if hasattr(m, 'content')]
-            if ai_messages:
-                last_response = ai_messages[-1].content
-                if last_response and last_response.strip():
-                    enriched_query = f"{query}\n\n[Retrieved Context]:\n{last_response}"
-        except Exception:
-            pass  # Context retrieval is best-effort
+            # Step 1: Memory update agent — checks if query has memory-worthy info
+            try:
+                agent = create_react_agent(
+                    model=llm,
+                    tools=VECTOR_STORE_TOOLS,
+                    prompt=MEMORY_SYSTEM_PROMPT,
+                    version="v1",
+                )
+                agent.invoke({"messages": [HumanMessage(content=query)]})
+            except Exception:
+                pass  # best-effort
 
-        return {
-            "query": enriched_query,
-        }
+            # Step 2: Context injection agent — retrieves relevant memories
+            enriched_query = query
+            try:
+                agent = create_react_agent(
+                    model=llm,
+                    tools=[similarity_search],
+                    prompt=CONTEXT_INJECT_PROMPT,
+                    version="v1",
+                )
+                output = agent.invoke({"messages": [HumanMessage(content=query)]})
+
+                # Append retrieved context to the query
+                ai_messages = [m for m in output.get("messages", []) if hasattr(m, "content")]
+                if ai_messages:
+                    last_response = ai_messages[-1].content
+                    if last_response and last_response.strip():
+                        enriched_query = f"{query}\n\n[Retrieved Context]:\n{last_response}"
+            except Exception:
+                pass  # best-effort
+
+            return {"query": enriched_query}
+        except Exception:
+            # Never fail the whole graph because memory enrichment is flaky.
+            return {"query": query}
 
     return memory_node
 
@@ -85,22 +90,25 @@ def get_summarization_node(llm: BaseChatModel):
 def get_understanding_node(llm: BaseChatModel):
     def understanding_node(state: AnonymousState):
         query = state["query"]
-        messages = state["messages"]
-        UNDERSTANDING_SYSTEM_PROMPT: str = get_understanding_prompt()
+        # Avoid strict tool-based structured output (some providers error if a tool
+        # isn't called). This is a lightweight classifier that's "good enough".
+        q = (query or "").lower()
+        project_like = any(
+            k in q
+            for k in (
+                "scaffold",
+                "scaffolding",
+                "create a new project",
+                "from scratch",
+                "project structure",
+                "new project",
+                "setup",
+                "initialize project",
+                "build a new project",
+            )
+        )
 
-        # Build message list for classification
-        classification_messages = messages + [
-            SystemMessage(content=UNDERSTANDING_SYSTEM_PROMPT),
-            HumanMessage(content=query)
-        ]
-
-        # Use structured output to classify the query
-        understanding_chain = llm.with_structured_output(schema=TypeOutput)
-        result = understanding_chain.invoke(classification_messages)
-
-        return {
-            "type": result.type_of_query,
-        }
+        return {"type": "scaffolding_node" if project_like else "execution_node"}
     return understanding_node
 
 
@@ -109,24 +117,30 @@ def get_execution_node(llm: BaseChatModel):
         query = state["query"]
         messages = state["messages"]
         EXECUTION_SYSTEM_PROMPT: str = get_execution_prompt()
+        try:
+            agent = create_react_agent(
+                model=llm,
+                tools=FILE_SYS_TOOLS,
+                prompt=EXECUTION_SYSTEM_PROMPT,
+                version="v1",
+            )
 
-        agent = create_react_agent(
-            model=llm,
-            tools=FILE_SYS_TOOLS,
-            prompt=EXECUTION_SYSTEM_PROMPT
-        )
+            # Invoke the ReAct agent with full message history + current query
+            input_messages = list(messages) + [HumanMessage(content=query)]
+            output = agent.invoke({"messages": input_messages})
 
-        # Invoke the ReAct agent with full message history + current query
-        input_messages = list(messages) + [HumanMessage(content=query)]
-        output = agent.invoke({"messages": input_messages})
+            # Extract the final AI response
+            ai_messages = [
+                m
+                for m in output.get("messages", [])
+                if hasattr(m, "type") and m.type == "ai" and getattr(m, "content", None)
+            ]
+            response_content = ai_messages[-1].content if ai_messages else "Task completed."
 
-        # Extract the final AI response
-        ai_messages = [m for m in output.get("messages", []) if hasattr(m, 'type') and m.type == 'ai' and m.content]
-        response_content = ai_messages[-1].content if ai_messages else "I completed the task."
-
-        return {
-            "messages": [SystemMessage(content=response_content)],
-        }
+            return {"messages": [SystemMessage(content=response_content)]}
+        except Exception as e:
+            # If tool calling fails, don't crash the graph.
+            return {"messages": [SystemMessage(content=f"❌ Error: {e}")]}
     return execution_node
 
 
@@ -136,24 +150,32 @@ def get_scaffolding_node(llm: BaseChatModel):
         messages = state["messages"]
 
         # Scaffolding uses the same execution agent but with a project-creation focus
-        agent = create_react_agent(
-            model=llm,
-            tools=FILE_SYS_TOOLS,
-            prompt=(
-                "You are a project scaffolding assistant. The user wants to create "
-                "a new project from scratch. Use the available file system tools to "
-                "create the project structure, configuration files, and boilerplate code. "
-                "Ask clarifying questions if the framework or stack is not clear."
+        try:
+            agent = create_react_agent(
+                model=llm,
+                tools=FILE_SYS_TOOLS,
+                prompt=(
+                    "You are a project scaffolding assistant. The user wants to create "
+                    "a new project from scratch. Use the available file system tools to "
+                    "create the project structure, configuration files, and boilerplate code. "
+                    "Ask clarifying questions if the framework or stack is not clear."
+                ),
+                version="v1",
             )
-        )
 
-        input_messages = list(messages) + [HumanMessage(content=query)]
-        output = agent.invoke({"messages": input_messages})
+            input_messages = list(messages) + [HumanMessage(content=query)]
+            output = agent.invoke({"messages": input_messages})
 
-        ai_messages = [m for m in output.get("messages", []) if hasattr(m, 'type') and m.type == 'ai' and m.content]
-        response_content = ai_messages[-1].content if ai_messages else "Project scaffolding complete."
+            ai_messages = [
+                m
+                for m in output.get("messages", [])
+                if hasattr(m, "type") and m.type == "ai" and getattr(m, "content", None)
+            ]
+            response_content = (
+                ai_messages[-1].content if ai_messages else "Project scaffolding complete."
+            )
 
-        return {
-            "messages": [SystemMessage(content=response_content)],
-        }
+            return {"messages": [SystemMessage(content=response_content)]}
+        except Exception as e:
+            return {"messages": [SystemMessage(content=f"❌ Error: {e}")]}
     return scaffolding_node
