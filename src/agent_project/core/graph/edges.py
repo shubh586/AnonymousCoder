@@ -1,4 +1,4 @@
-from ..states.AnonymousState import AnonymousState
+from ..states.AppStates import AppState
 
 
 def route_edge(state: AnonymousState):

@@ -46,3 +46,7 @@ So basically what we need is an auth layer so that when using qdrant cloud or us
 For now we are sticking with everything local so no need of a user_id
 
 context summarization at the first node just chip off some of the ai-human messages by replacing them with a summary system message like Eariler you and the user discussed this-this 
+
+
+
+INDEXING MUST BE SPECIFIED AS IN A USER SHOULD OPEN UP AND INIT INTO A PROJECT FOR TALKING WITH THE PROJECT 

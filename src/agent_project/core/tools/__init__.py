@@ -23,3 +23,35 @@ FILE_SYS_TOOLS = [
     get_current_directory,
     get_framework_context_tool,
 ]
+
+# Shell tools for persistent shell sessions
+# SHELL_TOOLS = [
+#     use_shell,
+#     get_shell_working_directory,
+#     reset_shell_directory,
+# ]
+
+# PowerShell tools for Windows systems
+POWERSHELL_TOOLS = [
+    use_powershell,
+    get_powershell_working_directory,
+    reset_powershell_directory,
+    check_powershell_availability,
+]
+
+MEMORY_TOOLS=[
+    update_memories,
+    get_user_memory
+]
+
+VECTOR_STORE_TOOLS=[
+    add_texts,
+    delete_text,
+    update_text,
+    similarity_search
+]
+
+
+SHELL_TOOLS=[
+    
+]

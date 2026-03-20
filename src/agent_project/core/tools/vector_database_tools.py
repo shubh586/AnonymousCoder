@@ -77,10 +77,3 @@ def delete_text(point_id: str) -> str:
         return vector_store.delete_text(point_id)
     except Exception as e:
         return f"❌ Error: {e}"
-
-VECTOR_STORE_TOOLS=[
-    add_texts,
-    delete_text,
-    update_text,
-    similarity_search
-]

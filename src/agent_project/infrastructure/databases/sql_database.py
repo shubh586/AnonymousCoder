@@ -11,14 +11,17 @@ class DataBaseManager(BaseModel):
 
     db_path: str = Field(default="user_space/history.db")
     
+    # allows the types that arent validated by Pydantic
     class Config:
         arbitrary_types_allowed = True
 
     def __init__(self, db_path: str = "user_space/history.db"):
+        # for validation purposes in  pydantic
         super().__init__(db_path=db_path)
-        # Use object.__setattr__ to bypass Pydantic's validation
+        # Use object.__setattr__ to bypass Pydantic's validation for non-standard types
         object.__setattr__(self, 'conn', sqlite3.connect(self.db_path, check_same_thread=False))
         self.conn.execute("PRAGMA foreign_keys = ON;")
+        # for making the outputs like dicts not tuples ( helps in readiablity tuple row[0] , dict is row['thread_id'])
         self.conn.row_factory = sqlite3.Row
         self._init_schema()
 
@@ -57,6 +60,16 @@ class DataBaseManager(BaseModel):
             VALUES (?, ?, ?)
             """,
             (thread_id, title, datetime.utcnow().isoformat()),
+        )
+        self.conn.commit()
+        
+    def alter_thread_title(self, thread_id: str, title: str) -> None:
+        curr = self.conn.cursor()
+        curr.execute(
+            """
+            UPDATE threads SET title = ? WHERE thread_id = ?
+            """,
+            (title, thread_id)
         )
         self.conn.commit()
 

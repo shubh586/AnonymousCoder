@@ -3,22 +3,19 @@ import platform
 from typing import Any, Optional
 from uuid import uuid4
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
-from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langfuse.langchain.CallbackHandler import LangchainCallbackHandler
 from langgraph.graph.state import CompiledStateGraph
 from pydantic import BaseModel, Field
 
-from src.agent_project.core.graph.graph import create_graph
-from src.agent_project.core.prompts.system_prompt import get_system_prompt
-from src.agent_project.core.states.AnonymousState import AnonymousState
-
 from ..config.config import AppSettings
+from ..core.graph.graph import create_graph
+from ..core.prompts.system_prompt import get_system_prompt, get_title_prompt
+from ..core.states.AppStates import AppState
 from ..infrastructure.databases.sql_database import (DataBaseManager,
                                                      get_database_manager)
-from ..infrastructure.databases.vector_database import initialize_vector_store
-from ..infrastructure.llm_clients.llms import GroqLLM, LLMConfig, ModelProvider
+from ..infrastructure.llm_clients.llms import LLMConfig, ModelProvider, get_llm
 from ..infrastructure.monitoring.tracing import get_langfuse_handler
 from ..utilities.logger import init_logger
 
@@ -29,7 +26,7 @@ class Application(BaseModel):
     tracer: Optional[LangchainCallbackHandler] = Field(default=None)
     thread_id: str = Field(default="")
     graph: Optional[CompiledStateGraph] = Field(default=None)
-
+    
     class Config:
         arbitrary_types_allowed = True
 

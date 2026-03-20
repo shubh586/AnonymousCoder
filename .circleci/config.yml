@@ -15,7 +15,7 @@ jobs:
           name: Install dependencies
           command: |
             uv venv
-            uv pip install autoflake isort
+            uv pip install autoflake isort pytest langchain-core
       - run:
           name: Check autoflake
           command: |
@@ -26,6 +26,11 @@ jobs:
           command: |
             source .venv/bin/activate
             isort --check-only .
+      - run:
+          name: Test Database
+          command: |
+            source .venv/bin/activate
+            pytest tests/database_test.py
 
 
 workflows:

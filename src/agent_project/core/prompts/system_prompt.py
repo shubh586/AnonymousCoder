@@ -162,7 +162,8 @@ def get_context_injection_prompt():
     Example: Say a user asks this : "Hey!, I wanted to change the ui to the style I prefer generally"
     Now you need to do a similarity search with the query : "Design: Prefered choice of desinging a UI"
     """
-    
+
+
 def get_execution_prompt():
    return """
    You are a code execution assistant with access to file system tools.
@@ -183,8 +184,7 @@ def get_execution_prompt():
    Do not guess — gather evidence first, then act.
    """
    
-   
-def get_summarization_prompt():
+def get_title_prompt():
    return """
    You are a conversation summarizer. Your task is to take a series of messages 
    between a user and an AI assistant and produce a concise summary.

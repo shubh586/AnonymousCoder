@@ -1,7 +1,8 @@
 from enum import Enum
 
-from frameworks.templates import templates
 from langchain_core.tools import tool
+
+from .frameworks.templates import templates
 
 
 class FRAMEWORKS(str,Enum):

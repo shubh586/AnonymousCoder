@@ -1,11 +1,8 @@
-from dotenv import load_dotenv
-from qdrant_client import QdrantClient
-
-load_dotenv()
 from typing import List
 from uuid import uuid4
 
 from langchain_core.embeddings import Embeddings
+from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
 _instance = None
