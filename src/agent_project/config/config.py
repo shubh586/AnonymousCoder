@@ -13,7 +13,7 @@ class AppSettings(BaseModel):
     QDRANT_COLLECTION: str = Field(default="app_documents")
     EMBEDDINGS_MODEL_NAME: str = Field(default="sentence-transformers/all-mpnet-base-v2")
     DEVICE: str = Field(default="cpu")
-    GROQ_API_KEY: str
+    AWS_REGION: str = Field(default="us-east-1")
     HISTORY_DB_FILE: str = Field(default="user_space/chats.db")
     LLM_NAME: str
     LOG_FILE: str = Field(default="user_space/logs.log")

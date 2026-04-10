@@ -137,6 +137,12 @@ class MainScreen(Screen):
     @work(thread=True)
     def run_agent(self, query: str) -> None:
         """Run the LangGraph agent in a background thread."""
+        from src.agent_project.utilities.logger import init_logger
+        log = init_logger(enable_logging=True, log_file="user_space/logs.log")
+
+        # Show thinking indicator
+        self.app.call_from_thread(self.add_message, "assistant", "🤔 Thinking...")
+
         try:
             # Build the input state
             if self.first_chat:
@@ -156,19 +162,21 @@ class MainScreen(Screen):
                     "type": ""
                 }
 
+            log.info(f"TUI: Invoking graph with query: {query[:80]}")
             output = self.graph.invoke(input_state, self.config)
+            log.info("TUI: Graph invocation completed")
 
             # Extract the AI response
             messages = output.get("messages", [])
             response = "Task completed."
             if messages:
                 for msg in reversed(messages):
-                    if hasattr(msg, 'type') and msg.type != 'human':
+                    if hasattr(msg, 'type') and msg.type == 'ai':
                         response = msg.content
                         break
 
-            # Update the UI from the worker thread
-            self.app.call_from_thread(self.add_message, "assistant", response)
+            # Remove the thinking message and show real response
+            self.app.call_from_thread(self._replace_last_message, response)
 
             # Store AI response in DB
             if self.database:
@@ -182,7 +190,8 @@ class MainScreen(Screen):
                     pass
 
         except Exception as e:
-            self.app.call_from_thread(self.add_message, "assistant", f"❌ Error: {e}")
+            log.error(f"TUI: Agent error: {e}")
+            self.app.call_from_thread(self._replace_last_message, f"❌ Error: {e}")
 
     def add_message(
         self,
@@ -205,3 +214,11 @@ class MainScreen(Screen):
         
         main_scroll = self.query_one("#main_scroll", VerticalScroll)
         main_scroll.scroll_end(animate=True)
+
+    def _replace_last_message(self, content: str) -> None:
+        """Replace the last assistant message (e.g. thinking indicator) with actual response."""
+        if self.chat_messages:
+            last_msg = self.chat_messages[-1]
+            last_msg.remove()
+            self.chat_messages.pop()
+        self.add_message("assistant", content)

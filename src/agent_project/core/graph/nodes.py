@@ -1,7 +1,7 @@
 from typing import List, Literal
 
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel
 
@@ -24,6 +24,14 @@ def get_memory_node(llm: BaseChatModel):
         # Get the current user query
         query: str = state["query"]
         try:
+            # Skip memory operations if vector store is not available
+            from ...infrastructure.databases.vector_database import get_vector_store
+            try:
+                get_vector_store()
+            except RuntimeError:
+                # Vector store not initialized — skip memory entirely
+                return {"query": query}
+
             MEMORY_SYSTEM_PROMPT: str = get_memory_prompt()
             CONTEXT_INJECT_PROMPT: str = get_context_injection_prompt()
 
@@ -137,10 +145,10 @@ def get_execution_node(llm: BaseChatModel):
             ]
             response_content = ai_messages[-1].content if ai_messages else "Task completed."
 
-            return {"messages": [SystemMessage(content=response_content)]}
+            return {"messages": [AIMessage(content=response_content)]}
         except Exception as e:
             # If tool calling fails, don't crash the graph.
-            return {"messages": [SystemMessage(content=f"❌ Error: {e}")]}
+            return {"messages": [AIMessage(content=f"❌ Error: {e}")]}
     return execution_node
 
 
@@ -175,7 +183,7 @@ def get_scaffolding_node(llm: BaseChatModel):
                 ai_messages[-1].content if ai_messages else "Project scaffolding complete."
             )
 
-            return {"messages": [SystemMessage(content=response_content)]}
+            return {"messages": [AIMessage(content=response_content)]}
         except Exception as e:
-            return {"messages": [SystemMessage(content=f"❌ Error: {e}")]}
+            return {"messages": [AIMessage(content=f"❌ Error: {e}")]}
     return scaffolding_node

@@ -3,9 +3,10 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Optional
 
+from langchain_aws import ChatBedrockConverse
 from langchain_core.language_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_groq import ChatGroq
+
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
@@ -17,7 +18,8 @@ class ModelProvider(str, Enum):
     OPENAI = "openai"
     GOOGLE = "google"
     OLLAMA = "ollama"
-    GROQ = "groq"
+
+    BEDROCK = "bedrock"
 
 
 class ModelParameters(BaseModel):
@@ -39,8 +41,12 @@ class LLMConfig(BaseModel):
     # else with parameters=ModelParameters() it will share the same instance of the class for each LLM instance
     parameters: ModelParameters = Field(default_factory=ModelParameters)
 
-    @field_validator('api_key',mode='before')
-    def validate_api_key(cls,v):
+    @field_validator('api_key', mode='before')
+    def validate_api_key(cls, v, info):
+        # Bedrock uses AWS credentials from `aws configure`, no API key needed
+        provider = info.data.get('provider')
+        if provider == ModelProvider.BEDROCK:
+            return v
         if v is None:
             raise ValueError("API key is required")
         return v
@@ -70,19 +76,7 @@ class OpenAILLM(BaseLLM):
             max_retries=config.parameters.max_retries
         )
 
-class GroqLLM(BaseLLM):
-    def create_llm(self, config: LLMConfig) -> BaseChatModel:
-        
-        if not config.api_key and not os.getenv("GROQ_API_KEY"):
-            raise ValueError("Groqq API key is required")
-        
-        api_key=config.api_key 
-        return ChatGroq(
-            model=config.model_name,
-            api_key=SecretStr(str(api_key)),
-            max_tokens=config.parameters.max_tokens,
-        )    
-        
+
 class GoogleLLM(BaseLLM):
     
     def create_llm(self, config: LLMConfig) -> BaseChatModel:
@@ -113,6 +107,21 @@ class OllamaLLM(BaseLLM):
             top_p=config.parameters.top_p,
             top_k=config.parameters.top_k,
             num_predict=config.parameters.max_tokens
+        )
+
+
+class BedrockLLM(BaseLLM):
+    """AWS Bedrock LLM using credentials from `aws configure`."""
+
+    def create_llm(self, config: LLMConfig) -> BaseChatModel:
+        region = config.base_url or os.getenv("AWS_REGION", "us-east-1")
+
+        return ChatBedrockConverse(
+            model=config.model_name,
+            region_name=region,
+            max_tokens=config.parameters.max_tokens,
+            temperature=config.parameters.temperature,
+            top_p=config.parameters.top_p,
         )
     
 

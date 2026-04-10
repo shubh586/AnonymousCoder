@@ -18,7 +18,7 @@ from ..config.config import AppSettings
 from ..infrastructure.databases.sql_database import (DataBaseManager,
                                                      get_database_manager)
 from ..infrastructure.databases.vector_database import initialize_vector_store
-from ..infrastructure.llm_clients.llms import GroqLLM, LLMConfig, ModelProvider
+from ..infrastructure.llm_clients.llms import BedrockLLM, LLMConfig, ModelProvider
 from ..infrastructure.monitoring.tracing import get_langfuse_handler
 from ..utilities.logger import init_logger
 
@@ -60,11 +60,10 @@ class Application(BaseModel):
         # Create LLM
         try:
             llm_config = LLMConfig(
-                provider=ModelProvider.GROQ,
+                provider=ModelProvider.BEDROCK,
                 model_name=self.settings.LLM_NAME,
-                api_key=self.settings.GROQ_API_KEY
             )
-            llm = GroqLLM().create_llm(config=llm_config)
+            llm = BedrockLLM().create_llm(config=llm_config)
             log.info("LLM initialized successfully")
         except Exception as e:
             log.error(f"Could not initialize LLM: {e}")
@@ -173,7 +172,7 @@ class Application(BaseModel):
                 if messages:
                     # Get the last non-human message
                     for msg in reversed(messages):
-                        if hasattr(msg, 'type') and msg.type != 'human':
+                        if hasattr(msg, 'type') and msg.type == 'ai':
                             print(f"\n🤖 Anonymous Coder: {msg.content}")
                             # Store AI response in DB
                             if self.database:

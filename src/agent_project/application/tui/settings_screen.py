@@ -15,8 +15,8 @@ class SettingsScreen(Screen):
     def __init__(self):
         super().__init__()
         self.settings = {
-            "model": "groq/mixtral-8x7b-32768",
-            "api_key": "",
+            "model": "anthropic.claude-3-sonnet-20240229-v1:0",
+            "aws_region": "us-east-1",
             "temperature": 0.7,
             "max_tokens": 4096,
             "dark_mode": True,
@@ -27,20 +27,19 @@ class SettingsScreen(Screen):
         yield Container(
             Static("[bold green]Settings Configuration[/bold green]", classes="title"),
             Vertical(
-                Label("Model Provider:"),
+                Label("Bedrock Model:"),
                 Select([
-                    ("Groq - Mixtral 8x7B", "groq/mixtral-8x7b-32768"),
-                    ("Groq - Llama 3.1", "groq/llama-3.1-70b-versatile"),
-                    ("OpenAI - GPT-4", "openai/gpt-4"),
-                    ("Anthropic - Claude", "anthropic/claude-3-sonnet"),
+                    ("Claude 3 Sonnet", "anthropic.claude-3-sonnet-20240229-v1:0"),
+                    ("Claude 3 Haiku", "anthropic.claude-3-haiku-20240307-v1:0"),
+                    ("Claude 3.5 Sonnet", "anthropic.claude-3-5-sonnet-20241022-v2:0"),
+                    ("Llama 3 70B Instruct", "meta.llama3-70b-instruct-v1:0"),
                 ], value=self.settings["model"], id="model_select"),
                 
-                Label("API Key:"),
+                Label("AWS Region:"),
                 Input(
-                    placeholder="Enter your API key...", 
-                    password=True,
-                    value=self.settings["api_key"],
-                    id="api_key_input"
+                    placeholder="e.g. us-east-1",
+                    value=self.settings["aws_region"],
+                    id="aws_region_input"
                 ),
                 
                 Label("Temperature:"),
@@ -88,7 +87,7 @@ class SettingsScreen(Screen):
     def save_settings(self) -> None:
         # Collect settings from form
         model_select = self.query_one("#model_select", Select)
-        api_key_input = self.query_one("#api_key_input", Input)
+        aws_region_input = self.query_one("#aws_region_input", Input)
         temperature_input = self.query_one("#temperature_input", Input)
         max_tokens_input = self.query_one("#max_tokens_input", Input)
         dark_mode_switch = self.query_one("#dark_mode_switch", Switch)
@@ -96,7 +95,7 @@ class SettingsScreen(Screen):
         
         self.settings.update({
             "model": model_select.value,
-            "api_key": api_key_input.value,
+            "aws_region": aws_region_input.value if aws_region_input.value else "us-east-1",
             "temperature": float(temperature_input.value) if temperature_input.value else 0.7,
             "max_tokens": int(max_tokens_input.value) if max_tokens_input.value else 4096,
             "dark_mode": dark_mode_switch.value,
@@ -108,8 +107,8 @@ class SettingsScreen(Screen):
     
     def reset_settings(self) -> None:
         self.settings = {
-            "model": "groq/mixtral-8x7b-32768",
-            "api_key": "",
+            "model": "anthropic.claude-3-sonnet-20240229-v1:0",
+            "aws_region": "us-east-1",
             "temperature": 0.7,
             "max_tokens": 4096,
             "dark_mode": True,
@@ -117,3 +116,4 @@ class SettingsScreen(Screen):
         }
         self.notify("Settings reset to defaults!", severity="information")
         self.refresh()
+
